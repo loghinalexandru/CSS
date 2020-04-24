@@ -1,8 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using FunctionPlotter.Domain;
 using FunctionPlotter.Helpers;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 
-namespace FunctionDrawer
+namespace FunctionPlotter
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -11,6 +14,7 @@ namespace FunctionDrawer
     {
         private readonly Painter _painter;
         private readonly ExpressionParser _parser;
+        private List<GraphObject> _function;
 
         public MainWindow()
         {
@@ -21,11 +25,11 @@ namespace FunctionDrawer
 
         private void InputEntered(object sender, TextChangedEventArgs e)
         {
-            var function = _parser.Parse(Input.Text);
-
-            _painter.DrawFunction(function, -100,100,0.001);
-
-            FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
+            _function.Add(new GraphObject()
+            {
+                GraphObjectType = GraphObjectType.Function,
+                Value = FunctionType.Sin
+            });
         }
     }
 }
