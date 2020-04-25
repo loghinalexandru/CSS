@@ -1,10 +1,12 @@
 ﻿using FunctionPlotter.Domain;
 using FunctionPlotter.Domain.Models;
+using FunctionPlotter.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using OxyPlot;
-using OxyPlot.Series;
+using Point = System.Drawing.Point;
 
 namespace FunctionPlotter
 {
@@ -13,8 +15,8 @@ namespace FunctionPlotter
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly FunctionPlotterViewModel _functionPlotter = new FunctionPlotterViewModel();
-        public PlotModel Graph { get; set; }
+        private Painter _painter;
+        private readonly FunctionPlotterViewModel _functionPlotter;
 
         public MainWindow()
         {
@@ -27,9 +29,9 @@ namespace FunctionPlotter
 
             OperatorsComboBox.SelectionChanged += HandleSelectionChanged;
             OperatorsComboBox.DropDownOpened += HandleDropDownOpened;
-            ConstructSeries();
+            SizeChanged += Draw_OnClick;
 
-            GraphPlot.Model = Graph;
+            _functionPlotter = new FunctionPlotterViewModel();
         }
 
         private void InitFunctionsComboBox()
@@ -70,20 +72,35 @@ namespace FunctionPlotter
             CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
         }
 
-        public FunctionSeries ConstructSeries()
+        private void Draw(int width, int height)
         {
-            var tmp = new PlotModel { Title = "Simple example", Subtitle = "using OxyPlot" };
-            var series = new FunctionSeries();
+            _painter = new Painter(width, height);
 
-            series.Points.Add(new DataPoint(0.1, 0.1));
-            series.Points.Add(new DataPoint(500, -1));
+            var points = new List<Point>()
+            {
+                new Point(0, 1),
+                new Point(0, 2),
+                new Point(0, 3),
+                new Point(500, 500)
+            };
 
-            tmp.Series.Add(series);
+            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
+                width);
 
-            Graph = tmp;
-            Graph.InvalidatePlot(true);
+            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), 0,
+                height);
 
-            return series;
+            var convertedPoints = new List<Point>(pointsX.Count);
+            convertedPoints.AddRange(pointsX.Select((t, i) => new Point(t, pointsY[i])));
+
+            _painter.DrawFunction(convertedPoints);
+
+            FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
+        }
+
+        private void Draw_OnClick(object sender, RoutedEventArgs e)
+        {
+            Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
     }
 }
