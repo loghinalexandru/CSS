@@ -6,5 +6,10 @@
         {
             GraphObjectType = GraphObjectType.RightParentheses;
         }
+
+        public override string ToString()
+        {
+            return ")";
+        }
     }
 }

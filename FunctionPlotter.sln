@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionPlotter", "FunctionPlotter\FunctionPlotter.csproj", "{1BF0B855-410E-4883-A251-A7744CAB4E22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionPlotter.Domain", "FunctionPlotter.Domain\FunctionPlotter.Domain.csproj", "{80966F10-ACF2-4D72-9F63-5FEAEB1F5EE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionPlotter.Domain", "FunctionPlotter.Domain\FunctionPlotter.Domain.csproj", "{80966F10-ACF2-4D72-9F63-5FEAEB1F5EE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionPlotterTests", "FunctionPlotterTests\FunctionPlotterTests.csproj", "{958CCA9E-0670-41FD-9907-443844D71CA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{80966F10-ACF2-4D72-9F63-5FEAEB1F5EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80966F10-ACF2-4D72-9F63-5FEAEB1F5EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80966F10-ACF2-4D72-9F63-5FEAEB1F5EE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958CCA9E-0670-41FD-9907-443844D71CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958CCA9E-0670-41FD-9907-443844D71CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958CCA9E-0670-41FD-9907-443844D71CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958CCA9E-0670-41FD-9907-443844D71CA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
