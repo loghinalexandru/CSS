@@ -7,7 +7,6 @@ namespace FunctionPlotter
     {
         private readonly List<GraphObject> _compositeFunction;
 
-
         public FunctionPlotterViewModel()
         {
             _compositeFunction = new List<GraphObject>();
@@ -32,6 +31,11 @@ namespace FunctionPlotter
         public string GetCompositeFunction()
         {
             return string.Join("", _compositeFunction);
+        }
+
+        public List<GraphObject> GetFunction()
+        {
+            return _compositeFunction;
         }
     }
 }

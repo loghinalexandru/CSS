@@ -24,9 +24,9 @@ namespace FunctionPlotter.Helpers
             return bitmapimage;
         }
 
-        public static List<int> GetScaledValues(List<int> points, double scaledMin, double scaledMax)
+        public static List<float> GetScaledValues(List<float> points, double scaledMin, double scaledMax)
         {
-            var result = new List<int>(points.Count);
+            var result = new List<float>(points.Count);
 
             var minValue = points.Min();
             var maxValue = points.Max();

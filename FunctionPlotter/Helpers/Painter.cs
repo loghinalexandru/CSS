@@ -14,15 +14,27 @@ namespace FunctionPlotter.Helpers
             _graphics = Graphics.FromImage(_bitmap);
 
             Init();
+            DrawAxis();
         }
 
         private void Init()
         {
+            _graphics.ScaleTransform(1.0F, -1.0F);
+            _graphics.TranslateTransform(0.0F, -_bitmap.Height);
             _graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             _graphics.FillRectangle(Brushes.White, 0, 0, _bitmap.Width, _bitmap.Height);
         }
 
-        public void DrawFunction(List<Point> points)
+        private void DrawAxis()
+        {
+            DrawLine(new Point(0,50), new Point(0, _bitmap.Height - 1));
+            DrawLine(new Point(50, 0), new Point(_bitmap.Width - 1, 0));
+
+            var drawFont = new Font("Arial", 5);
+            _graphics.DrawString("0", drawFont, new SolidBrush(Color.Black), 0 ,0);
+        }
+
+        public void DrawFunction(List<PointF> points)
         {
             for (var i = 0; i < points.Count - 1; ++i)
             {
@@ -35,7 +47,7 @@ namespace FunctionPlotter.Helpers
             return _bitmap;
         }
 
-        private void DrawLine(Point firstPoint, Point secondPoint)
+        private void DrawLine(PointF firstPoint, PointF secondPoint)
         {
             _graphics.DrawLine(new Pen(Brushes.Black, 2), firstPoint, secondPoint);
         }

@@ -3,6 +3,7 @@ using FunctionPlotter.Domain.Models;
 using FunctionPlotter.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ namespace FunctionPlotter
     public partial class MainWindow : Window
     {
         private Painter _painter;
+        private Function _function;
         private readonly FunctionPlotterViewModel _functionPlotter;
 
         public MainWindow()
@@ -76,13 +78,7 @@ namespace FunctionPlotter
         {
             _painter = new Painter(width, height);
 
-            var points = new List<Point>()
-            {
-                new Point(0, 1),
-                new Point(0, 2),
-                new Point(0, 3),
-                new Point(500, 500)
-            };
+            var points = _function.GetFunctionGraph(-5, 5, 0.01);
 
             var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
                 width);
@@ -90,8 +86,8 @@ namespace FunctionPlotter
             var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), 0,
                 height);
 
-            var convertedPoints = new List<Point>(pointsX.Count);
-            convertedPoints.AddRange(pointsX.Select((t, i) => new Point(t, pointsY[i])));
+            var convertedPoints = new List<PointF>(pointsX.Count);
+            convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
 
             _painter.DrawFunction(convertedPoints);
 
@@ -100,6 +96,15 @@ namespace FunctionPlotter
 
         private void Draw_OnClick(object sender, RoutedEventArgs e)
         {
+            _function = new Function(new List<GraphObject>()
+            {
+                new VariableObject(),
+                new OperatorObject("^"),
+                new ConstantObject(2),
+                new OperatorObject("-"),
+                new ConstantObject(500)
+            });
+
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
     }
