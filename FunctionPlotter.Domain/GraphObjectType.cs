@@ -4,8 +4,6 @@
     {
         Function,
         Operator,
-        LeftParentheses,
-        RightParentheses,
         Variable,
         Constant
     }

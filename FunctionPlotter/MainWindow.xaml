@@ -6,11 +6,18 @@
         mc:Ignorable="d"
         Title="FunctionDrawer" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.2*" />
+            <ColumnDefinition Width="0.2*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="22*" />
-            <RowDefinition Height="195*" />
+            <RowDefinition Height="0.1*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Name="Input" Margin="5,5,5,5" TextChanged="InputEntered" />
-        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" />
+        <TextBox Grid.Row="0" Name="CompositeFunction" Margin="5,5,5,5" TextChanged="InputEntered" Grid.ColumnSpan="1" />
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="OperatorComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
+        <ComboBox Grid.Row="0" Grid.Column="2" Name="FunctionsComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
+        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="3" />
     </Grid>
 </Window>
