@@ -79,7 +79,7 @@ namespace FunctionPlotter.Helpers
 
                 if (graphObject.GraphObjectType == GraphObjectType.Constant)
                 {
-                    stack.Push(((ConstantObject) graphObject).Value);
+                    stack.Push(((ConstantObject) graphObject).Value.Value);
                 }
 
                 if (graphObject.GraphObjectType == GraphObjectType.Variable)

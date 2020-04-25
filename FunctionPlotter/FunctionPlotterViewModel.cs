@@ -1,10 +1,15 @@
 ﻿using FunctionPlotter.Domain;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace FunctionPlotter
 {
-    public sealed class FunctionPlotterViewModel
+    public sealed class FunctionPlotterViewModel : INotifyPropertyChanged
     {
+        public double Min { get; set; }
+        public double Max { get; set; }
+        public double StepSize { get; set; }
+
         private readonly List<GraphObject> _compositeFunction;
 
         public FunctionPlotterViewModel()
@@ -37,5 +42,7 @@ namespace FunctionPlotter
         {
             return _compositeFunction;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
