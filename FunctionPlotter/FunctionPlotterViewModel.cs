@@ -1,6 +1,4 @@
 ﻿using FunctionPlotter.Domain;
-using OxyPlot;
-using OxyPlot.Series;
 using System.Collections.Generic;
 
 namespace FunctionPlotter

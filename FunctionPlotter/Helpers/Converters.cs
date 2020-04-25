@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace FunctionPlotter.Helpers
@@ -20,6 +22,23 @@ namespace FunctionPlotter.Helpers
             bitmapimage.EndInit();
 
             return bitmapimage;
+        }
+
+        public static List<int> GetScaledValues(List<int> points, double scaledMin, double scaledMax)
+        {
+            var result = new List<int>(points.Count);
+
+            var minValue = points.Min();
+            var maxValue = points.Max();
+
+            foreach (var point in points)
+            {
+                var newValue = (scaledMax - scaledMin) * (point - minValue) / (maxValue - minValue) + scaledMin;
+
+                result.Add((int)newValue);
+            }
+
+            return result;
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace FunctionPlotter.Helpers
 {
@@ -10,19 +8,25 @@ namespace FunctionPlotter.Helpers
         private readonly Graphics _graphics;
         private readonly Bitmap _bitmap;
 
-        public Painter()
+        public Painter(int width, int height)
         {
-            _bitmap = new Bitmap(1024, 1024);
+            _bitmap = new Bitmap(width, height);
             _graphics = Graphics.FromImage(_bitmap);
+
+            Init();
         }
 
-        public void DrawFunction(List<Func<double, double>> function, double low, double high, double stepSize)
+        private void Init()
         {
-            for (var range = low; range < high; range += stepSize)
+            _graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            _graphics.FillRectangle(Brushes.White, 0, 0, _bitmap.Width, _bitmap.Height);
+        }
+
+        public void DrawFunction(List<Point> points)
+        {
+            for (var i = 0; i < points.Count - 1; ++i)
             {
-                var resultY = 0.0;
-                resultY += function.Sum(entry => entry(range));
-                DrawPoint(-(int)range + _bitmap.Width / 2, -(int)resultY + _bitmap.Height / 2);
+                DrawLine(points[i], points[i + 1]);
             }
         }
 
@@ -31,9 +35,9 @@ namespace FunctionPlotter.Helpers
             return _bitmap;
         }
 
-        private void DrawPoint(int positionX, int positionY)
+        private void DrawLine(Point firstPoint, Point secondPoint)
         {
-            _graphics.FillRectangle(Brushes.Red, positionX, positionY, 1, 1);
+            _graphics.DrawLine(new Pen(Brushes.Black, 2), firstPoint, secondPoint);
         }
     }
 }
