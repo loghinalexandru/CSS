@@ -1,11 +1,8 @@
-﻿using System;
-using FunctionPlotter.Domain;
-using FunctionPlotter.Helpers;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FunctionPlotter.Domain;
+using FunctionPlotter.Domain.Models;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using FunctionPlotter.Domain.Models;
 
 namespace FunctionPlotter
 {
@@ -14,27 +11,59 @@ namespace FunctionPlotter
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Painter _painter;
-        private readonly ExpressionParser _parser;
-        private readonly List<GraphObject> _compositeFunction;
+        private readonly FunctionPlotterViewModel _functionPlotter = new FunctionPlotterViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
-            _painter = new Painter();
-            _parser = new ExpressionParser();
-            _compositeFunction = new List<GraphObject>();
+            InitFunctionsComboBox();
+            InitOperatorsComboBox();
+
+            FunctionsComboBox.SelectionChanged += HandleSelectionChanged;
+            FunctionsComboBox.DropDownOpened += HandleDropDownOpened;
+
+            OperatorsComboBox.SelectionChanged += HandleSelectionChanged;
+            OperatorsComboBox.DropDownOpened += HandleDropDownOpened;
         }
 
-        private void InputEntered(object sender, TextChangedEventArgs e)
+        private void InitFunctionsComboBox()
         {
-            _compositeFunction.Add(new FunctionObject(Math.Sin));
-            _compositeFunction.Add(new OperatorObject("("));
-            _compositeFunction.Add(new FunctionObject(Math.Cos));
-            _compositeFunction.Add(new VariableObject());
-            _compositeFunction.Add(new OperatorObject(")"));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Sin));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Cos));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Tan));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Abs));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Sqrt));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Log10));
+            FunctionsComboBox.Items.Add(new FunctionObject(Math.Exp));
+        }
 
-            var ceva = string.Join(" ", _compositeFunction);
+        private void InitOperatorsComboBox()
+        {
+            OperatorsComboBox.Items.Add(new OperatorObject("+"));
+            OperatorsComboBox.Items.Add(new OperatorObject("-"));
+            OperatorsComboBox.Items.Add(new OperatorObject("/"));
+            OperatorsComboBox.Items.Add(new OperatorObject("*"));
+            OperatorsComboBox.Items.Add(new OperatorObject("^"));
+            OperatorsComboBox.Items.Add(new OperatorObject("("));
+            OperatorsComboBox.Items.Add(new OperatorObject(")"));
+        }
+
+        private void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            _functionPlotter.AddComponent(((ComboBox) sender).SelectedItem as GraphObject);
+
+            CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
+        }
+
+        private void HandleDropDownOpened(object sender, EventArgs e)
+        {
+            ((ComboBox) sender).SelectedItem = null;
+        }
+
+        private void HandleRemoveButton(object sender, RoutedEventArgs e)
+        {
+            _functionPlotter.RemoveComponent();
+            CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
         }
     }
 }

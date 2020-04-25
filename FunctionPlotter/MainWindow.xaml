@@ -10,14 +10,21 @@
             <ColumnDefinition />
             <ColumnDefinition Width="0.2*" />
             <ColumnDefinition Width="0.2*" />
+            <ColumnDefinition Width="0.2*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Name="CompositeFunction" Margin="5,5,5,5" TextChanged="InputEntered" Grid.ColumnSpan="1" />
-        <ComboBox Grid.Row="0" Grid.Column="1" Name="OperatorComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
+        <TextBox VerticalContentAlignment="Center" Grid.Row="0" Name="CompositeFunction" Margin="5,5,5,5"
+                 Grid.ColumnSpan="1" IsReadOnly="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Button Grid.Row="0" Grid.Column="3" Margin="5,5,5,5" Click="HandleRemoveButton">
+            <TextBlock>
+                <Bold>C</Bold>
+            </TextBlock>
+        </Button>
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="OperatorsComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
         <ComboBox Grid.Row="0" Grid.Column="2" Name="FunctionsComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="3" />
+        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="4" />
     </Grid>
 </Window>
