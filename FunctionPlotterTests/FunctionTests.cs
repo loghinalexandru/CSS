@@ -91,5 +91,26 @@ namespace FunctionPlotterTests
 
             result.Should().Be(Math.Exp(Math.Sin(2 * Math.PI) + Math.Cos(2 * Math.PI)));
         }
+
+        [Fact]
+        public void When_GetIntegralPoints()
+        {
+            var expression = new List<GraphObject>()
+            {
+                new VariableObject(),
+                new OperatorObject("+"),
+                new ConstantObject(2)
+            };
+
+            var systemUnderTest = new Function(expression);
+
+            var points = systemUnderTest.GetFunctionGraph(-5, 2, 0.5);
+            var rectangles = systemUnderTest.GetIntegralPoints(points);
+
+            foreach (var valueTuple in rectangles)
+            {
+                _testOutputHelper.WriteLine(valueTuple.ToString());
+            }
+        }
     }
 }

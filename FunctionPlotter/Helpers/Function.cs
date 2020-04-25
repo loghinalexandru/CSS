@@ -42,6 +42,32 @@ namespace FunctionPlotter.Helpers
             return points;
         }
 
+        public List<(PointF, PointF)> GetIntegralPoints(List<PointF> functionPoints)
+        {
+            var points = new List<(PointF, PointF)>();
+
+            for (var i = 0; i < functionPoints.Count - 1; i += 1)
+            {
+                PointF upperLeftPoint;
+                PointF lowerRightPoint;
+
+                if (functionPoints[i].Y > 0)
+                {
+                    upperLeftPoint = functionPoints[i];
+                    lowerRightPoint = new PointF(functionPoints[i + 1].X, 0);
+                }
+                else
+                {
+                    upperLeftPoint = new PointF(functionPoints[i].X, 0);
+                    lowerRightPoint = functionPoints[i + 1];
+                }
+
+                points.Add((upperLeftPoint, lowerRightPoint));
+            }
+
+            return points;
+        }
+
         public double Compute(double x)
         {
             var stack = new Stack<double>();

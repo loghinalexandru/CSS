@@ -79,6 +79,24 @@ namespace FunctionPlotter
             _painter = new Painter(width, height);
 
             var points = _function.GetFunctionGraph(-5, 5, 0.01);
+            var integralPoints = _function.GetIntegralPoints(points);
+
+            var upperLeftPoints = integralPoints.Select(entry => entry.Item1).ToList();
+            var lowerRightPoints = integralPoints.Select(entry => entry.Item2).ToList();
+
+            var iPointsX = upperLeftPoints.Select(entry => entry.X).ToList();
+            iPointsX.AddRange(lowerRightPoints.Select(entry => entry.X));
+            iPointsX = Converters.GetScaledValues(iPointsX, 0, width);
+
+            var iPointsY = upperLeftPoints.Select(entry => entry.Y).ToList();
+            iPointsY.AddRange(lowerRightPoints.Select(entry => entry.Y));
+            iPointsY = Converters.GetScaledValues(iPointsY, 0, height);
+
+            var convertedIntegralPoints = new List<PointF>(iPointsX.Count / 2);
+            convertedIntegralPoints.AddRange(iPointsX.Select((t, i) => new PointF(t, iPointsY[i])));
+            var rectanglePoints = convertedIntegralPoints.GetRange(0, convertedIntegralPoints.Count / 2).Zip(
+                convertedIntegralPoints.GetRange(convertedIntegralPoints.Count / 2, convertedIntegralPoints.Count / 2),
+                (u, l) => (u, l)).ToList();
 
             var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
                 width);
@@ -90,6 +108,7 @@ namespace FunctionPlotter
             convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
 
             _painter.DrawFunction(convertedPoints);
+            _painter.DrawIntegral(rectanglePoints);
 
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }
@@ -102,8 +121,20 @@ namespace FunctionPlotter
                 new OperatorObject("^"),
                 new ConstantObject(2),
                 new OperatorObject("-"),
-                new ConstantObject(500)
+                new ConstantObject(2)
             });
+
+            ////_function = new Function(new List<GraphObject>()
+            ////{
+            ////    new FunctionObject(Math.Exp),
+            ////    new LeftParenthesesObject(),
+            ////    new FunctionObject(Math.Sin),
+            ////    new VariableObject(),
+            ////    new OperatorObject("+"),
+            ////    new FunctionObject(Math.Cos),
+            ////    new VariableObject(),
+            ////    new RightParenthesesObject()
+            ////});
 
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }

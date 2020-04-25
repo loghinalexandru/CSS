@@ -42,6 +42,14 @@ namespace FunctionPlotter.Helpers
             }
         }
 
+        public void DrawIntegral(List<(PointF, PointF)> points)
+        {
+            foreach(var pointPair in points)
+            {
+                DrawRec(pointPair.Item1, pointPair.Item2);
+            }
+        }
+
         public Bitmap GetBitmap()
         {
             return _bitmap;
@@ -50,6 +58,14 @@ namespace FunctionPlotter.Helpers
         private void DrawLine(PointF firstPoint, PointF secondPoint)
         {
             _graphics.DrawLine(new Pen(Brushes.Black, 2), firstPoint, secondPoint);
+        }
+
+        private void DrawRec(PointF upperLeftPoint, PointF lowerRightPoint)
+        {
+            var width = lowerRightPoint.X - upperLeftPoint.X;
+            var height = upperLeftPoint.Y - lowerRightPoint.Y;
+
+            _graphics.DrawRectangle(new Pen(Color.FromArgb(64, 0, 255, 0), 1), upperLeftPoint.X, lowerRightPoint.Y, width, height);
         }
     }
 }
