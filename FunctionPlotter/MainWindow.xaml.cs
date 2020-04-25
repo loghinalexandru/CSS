@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Point = System.Drawing.Point;
 
 namespace FunctionPlotter
 {
@@ -16,24 +15,36 @@ namespace FunctionPlotter
     /// </summary>
     public partial class MainWindow : Window
     {
+        public FunctionPlotterViewModel PlotterViewModel { get; }
+
         private Painter _painter;
         private Function _function;
-        private readonly FunctionPlotterViewModel _functionPlotter;
 
         public MainWindow()
         {
             InitializeComponent();
             InitFunctionsComboBox();
             InitOperatorsComboBox();
+            InitParenthesesComboBox();
+            InitVariableComboBox();
+
 
             FunctionsComboBox.SelectionChanged += HandleSelectionChanged;
             FunctionsComboBox.DropDownOpened += HandleDropDownOpened;
 
             OperatorsComboBox.SelectionChanged += HandleSelectionChanged;
             OperatorsComboBox.DropDownOpened += HandleDropDownOpened;
-            SizeChanged += Draw_OnClick;
 
-            _functionPlotter = new FunctionPlotterViewModel();
+            ParenthesesComboBox.SelectionChanged += HandleSelectionChanged;
+            ParenthesesComboBox.DropDownOpened += HandleDropDownOpened;
+
+            VariableComboBox.SelectionChanged += HandleSelectionChangedOnVariable;
+            VariableComboBox.DropDownOpened += HandleDropDownOpened;
+
+//            SizeChanged += Draw_OnClick; SOLVE ERROR ON INITIAL STARTUP
+
+            PlotterViewModel = new FunctionPlotterViewModel();
+            DataContext = PlotterViewModel;
         }
 
         private void InitFunctionsComboBox()
@@ -56,11 +67,35 @@ namespace FunctionPlotter
             OperatorsComboBox.Items.Add(new OperatorObject("^"));
         }
 
+        private void InitParenthesesComboBox()
+        {
+            ParenthesesComboBox.Items.Add(new LeftParenthesesObject());
+            ParenthesesComboBox.Items.Add(new RightParenthesesObject());
+        }
+
+        private void InitVariableComboBox()
+        {
+            VariableComboBox.Items.Add(new VariableObject());
+            VariableComboBox.Items.Add(new ConstantObject(null));
+        }
+
         private void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            _functionPlotter.AddComponent(((ComboBox) sender).SelectedItem as GraphObject);
+            PlotterViewModel.AddComponent(((ComboBox) sender).SelectedItem as GraphObject);
 
-            CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
+            CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
+        }
+
+        private void HandleSelectionChangedOnVariable(object sender,
+            SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            if (((ComboBox) sender).SelectedItem is ConstantObject)
+            {
+                MessageBox.Show("Hello, world!", "My App");
+                return;
+            }
+
+            HandleSelectionChanged(sender, selectionChangedEventArgs);
         }
 
         private void HandleDropDownOpened(object sender, EventArgs e)
@@ -70,15 +105,16 @@ namespace FunctionPlotter
 
         private void HandleRemoveButton(object sender, RoutedEventArgs e)
         {
-            _functionPlotter.RemoveComponent();
-            CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
+            PlotterViewModel.RemoveComponent();
+            CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
 
         private void Draw(int width, int height)
         {
             _painter = new Painter(width, height);
 
-            var points = _function.GetFunctionGraph(-5, 5, 0.01);
+            var points =
+                _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
 
             var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
                 width);
@@ -96,15 +132,7 @@ namespace FunctionPlotter
 
         private void Draw_OnClick(object sender, RoutedEventArgs e)
         {
-            _function = new Function(new List<GraphObject>()
-            {
-                new VariableObject(),
-                new OperatorObject("^"),
-                new ConstantObject(2),
-                new OperatorObject("-"),
-                new ConstantObject(500)
-            });
-
+            _function = new Function(PlotterViewModel.GetFunction());
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
     }

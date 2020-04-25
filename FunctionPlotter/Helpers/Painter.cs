@@ -14,7 +14,7 @@ namespace FunctionPlotter.Helpers
             _graphics = Graphics.FromImage(_bitmap);
 
             Init();
-            DrawAxis();
+//            DrawAxis();
         }
 
         private void Init()
@@ -27,11 +27,11 @@ namespace FunctionPlotter.Helpers
 
         private void DrawAxis()
         {
-            DrawLine(new Point(0,50), new Point(0, _bitmap.Height - 1));
+            DrawLine(new Point(0, 50), new Point(0, _bitmap.Height - 1));
             DrawLine(new Point(50, 0), new Point(_bitmap.Width - 1, 0));
 
             var drawFont = new Font("Arial", 5);
-            _graphics.DrawString("0", drawFont, new SolidBrush(Color.Black), 0 ,0);
+            _graphics.DrawString("0", drawFont, new SolidBrush(Color.Black), 0, 0);
         }
 
         public void DrawFunction(List<PointF> points)
