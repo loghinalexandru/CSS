@@ -1,4 +1,6 @@
 ﻿using FunctionPlotter.Domain;
+using OxyPlot;
+using OxyPlot.Series;
 using System.Collections.Generic;
 
 namespace FunctionPlotter
@@ -6,6 +8,7 @@ namespace FunctionPlotter
     public sealed class FunctionPlotterViewModel
     {
         private readonly List<GraphObject> _compositeFunction;
+
 
         public FunctionPlotterViewModel()
         {

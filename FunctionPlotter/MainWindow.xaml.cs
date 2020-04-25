@@ -3,6 +3,8 @@ using FunctionPlotter.Domain.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using OxyPlot;
+using OxyPlot.Series;
 
 namespace FunctionPlotter
 {
@@ -12,6 +14,7 @@ namespace FunctionPlotter
     public partial class MainWindow : Window
     {
         private readonly FunctionPlotterViewModel _functionPlotter = new FunctionPlotterViewModel();
+        public PlotModel Graph { get; set; }
 
         public MainWindow()
         {
@@ -24,6 +27,9 @@ namespace FunctionPlotter
 
             OperatorsComboBox.SelectionChanged += HandleSelectionChanged;
             OperatorsComboBox.DropDownOpened += HandleDropDownOpened;
+            ConstructSeries();
+
+            GraphPlot.Model = Graph;
         }
 
         private void InitFunctionsComboBox()
@@ -44,8 +50,6 @@ namespace FunctionPlotter
             OperatorsComboBox.Items.Add(new OperatorObject("/"));
             OperatorsComboBox.Items.Add(new OperatorObject("*"));
             OperatorsComboBox.Items.Add(new OperatorObject("^"));
-            OperatorsComboBox.Items.Add(new OperatorObject("("));
-            OperatorsComboBox.Items.Add(new OperatorObject(")"));
         }
 
         private void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
@@ -64,6 +68,22 @@ namespace FunctionPlotter
         {
             _functionPlotter.RemoveComponent();
             CompositeFunction.Text = _functionPlotter.GetCompositeFunction();
+        }
+
+        public FunctionSeries ConstructSeries()
+        {
+            var tmp = new PlotModel { Title = "Simple example", Subtitle = "using OxyPlot" };
+            var series = new FunctionSeries();
+
+            series.Points.Add(new DataPoint(0.1, 0.1));
+            series.Points.Add(new DataPoint(500, -1));
+
+            tmp.Series.Add(series);
+
+            Graph = tmp;
+            Graph.InvalidatePlot(true);
+
+            return series;
         }
     }
 }

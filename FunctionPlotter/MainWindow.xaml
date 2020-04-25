@@ -1,8 +1,10 @@
 ﻿<Window x:Class="FunctionPlotter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:functionPlotter="clr-namespace:FunctionPlotter"
         mc:Ignorable="d"
         Title="FunctionDrawer" Height="450" Width="800">
     <Grid>
@@ -25,6 +27,7 @@
         </Button>
         <ComboBox Grid.Row="0" Grid.Column="1" Name="OperatorsComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
         <ComboBox Grid.Row="0" Grid.Column="2" Name="FunctionsComboBox" Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="4" />
+
+        <oxy:PlotView Grid.Row="1" Name="GraphPlot" Margin="5,5,5,5" Grid.ColumnSpan="4" Grid.Column="0" />
     </Grid>
 </Window>
