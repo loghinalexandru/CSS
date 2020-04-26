@@ -3,6 +3,7 @@ using FunctionPlotter.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace FunctionPlotter.Helpers
 {
@@ -17,11 +18,14 @@ namespace FunctionPlotter.Helpers
 
         public List<PointF> GetFunctionGraph(double low, double high, double stepSize)
         {
+            if (stepSize <= 0)
+                throw new InvalidOperationException("Invalid step size");
+
             if (low >= high)
                 throw new InvalidOperationException("Invalid interval");
 
             if (high - low < stepSize)
-                throw new InvalidOperationException("Invalid step size");
+                throw new InvalidOperationException("Too high step size");
 
             var points = new List<PointF>();
             for (var x = low; x <= high; x += stepSize)
@@ -36,6 +40,10 @@ namespace FunctionPlotter.Helpers
         {
             var points = new List<(PointF, PointF)>();
 
+            var pointsY = functionPoints.Select(entry => entry.Y).ToList();
+            var minY = pointsY.Min();
+            var maxY = pointsY.Max();
+
             for (var i = 0; i < functionPoints.Count - 1; i += 1)
             {
                 PointF upperLeftPoint;
@@ -44,11 +52,11 @@ namespace FunctionPlotter.Helpers
                 if (functionPoints[i].Y > 0)
                 {
                     upperLeftPoint = functionPoints[i];
-                    lowerRightPoint = new PointF(functionPoints[i + 1].X, 0);
+                    lowerRightPoint = new PointF(functionPoints[i + 1].X, Math.Max(0, minY));
                 }
                 else
                 {
-                    upperLeftPoint = new PointF(functionPoints[i].X, 0);
+                    upperLeftPoint = new PointF(functionPoints[i].X, Math.Min(0, maxY));
                     lowerRightPoint = functionPoints[i + 1];
                 }
 
