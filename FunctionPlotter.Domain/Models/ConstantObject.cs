@@ -12,7 +12,7 @@
 
         public override string ToString()
         {
-            return !Value.HasValue ? "constant" : $" {Value} ";
+            return !Value.HasValue ? "constant" : $"{Value}";
         }
     }
 }

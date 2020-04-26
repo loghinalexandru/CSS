@@ -9,6 +9,7 @@ namespace FunctionPlotter
         public double Min { get; set; }
         public double Max { get; set; }
         public double StepSize { get; set; }
+        public bool DrawIntegral { get; set; }
 
         private readonly List<GraphObject> _compositeFunction;
 

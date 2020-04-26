@@ -28,7 +28,6 @@ namespace FunctionPlotter
             InitParenthesesComboBox();
             InitVariableComboBox();
 
-
             FunctionsComboBox.SelectionChanged += HandleSelectionChanged;
             FunctionsComboBox.DropDownOpened += HandleDropDownOpened;
 
@@ -41,7 +40,7 @@ namespace FunctionPlotter
             VariableComboBox.SelectionChanged += HandleSelectionChangedOnVariable;
             VariableComboBox.DropDownOpened += HandleDropDownOpened;
 
-//            SizeChanged += Draw_OnClick; SOLVE ERROR ON INITIAL STARTUP
+            SizeChanged += Draw_OnClick;
 
             PlotterViewModel = new FunctionPlotterViewModel();
             DataContext = PlotterViewModel;
@@ -91,7 +90,10 @@ namespace FunctionPlotter
         {
             if (((ComboBox) sender).SelectedItem is ConstantObject)
             {
-                MessageBox.Show("Hello, world!", "My App");
+                var result = new InputBox().ShowAndWaitForResult();
+                PlotterViewModel.AddComponent(new ConstantObject(result));
+                CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
+
                 return;
             }
 
@@ -110,6 +112,49 @@ namespace FunctionPlotter
         }
 
         private void Draw(int width, int height)
+        {
+            if (PlotterViewModel.DrawIntegral)
+            {
+                DrawIntegralFunctionPlot(width, height);
+                return;
+            }
+
+            DrawFunctionPlot(width, height);
+        }
+
+        private void Draw_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (PlotterViewModel.GetFunction().Count == 0)
+            {
+                return;
+            }
+
+            _function = new Function(PlotterViewModel.GetFunction());
+            Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
+        }
+
+        private void DrawFunctionPlot(int width, int height)
+        {
+            _painter = new Painter(width, height);
+
+            var points =
+                _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
+
+            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
+                width);
+
+            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), 0,
+                height);
+
+            var convertedPoints = new List<PointF>(pointsX.Count);
+            convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
+
+            _painter.DrawFunction(convertedPoints);
+
+            FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
+        }
+
+        private void DrawIntegralFunctionPlot(int width, int height)
         {
             _painter = new Painter(width, height);
 
@@ -147,12 +192,6 @@ namespace FunctionPlotter
             _painter.DrawIntegral(rectanglePoints);
 
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
-        }
-
-        private void Draw_OnClick(object sender, RoutedEventArgs e)
-        {
-            _function = new Function(PlotterViewModel.GetFunction());
-            Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
     }
 }

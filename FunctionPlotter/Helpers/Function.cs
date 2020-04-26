@@ -12,16 +12,6 @@ namespace FunctionPlotter.Helpers
 
         public Function(ICollection<GraphObject> tokens)
         {
-            if (tokens == null || tokens.Count == 0)
-            {
-                tokens = new List<GraphObject>()
-                {
-                    new VariableObject(),
-                    new OperatorObject("+"),
-                    new ConstantObject(2)
-                };
-            }
-
             _rpnQueue = Parse(tokens);
         }
 
