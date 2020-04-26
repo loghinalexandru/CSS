@@ -4,6 +4,7 @@ using FunctionPlotter.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,8 @@ namespace FunctionPlotter
 
         private Painter _painter;
         private Function _function;
+        private readonly float _originOffset = 25;
+        private readonly int _fontSize = 8;
 
         public MainWindow()
         {
@@ -140,16 +143,20 @@ namespace FunctionPlotter
             var points =
                 _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
 
-            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
+            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), _originOffset,
                 width);
 
-            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), 0,
+            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), _originOffset,
                 height);
 
             var convertedPoints = new List<PointF>(pointsX.Count);
             convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
 
+            _painter.DrawAxis((int) _originOffset);
             _painter.DrawFunction(convertedPoints);
+
+            DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
+            DrawScale(points.Select(point => point.Y).Min(), points.Select(point => point.Y).Max(), width, height, "y");
 
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }
@@ -167,11 +174,11 @@ namespace FunctionPlotter
 
             var iPointsX = upperLeftPoints.Select(entry => entry.X).ToList();
             iPointsX.AddRange(lowerRightPoints.Select(entry => entry.X));
-            iPointsX = Converters.GetScaledValues(iPointsX, 0, width);
+            iPointsX = Converters.GetScaledValues(iPointsX, _originOffset, width);
 
             var iPointsY = upperLeftPoints.Select(entry => entry.Y).ToList();
             iPointsY.AddRange(lowerRightPoints.Select(entry => entry.Y));
-            iPointsY = Converters.GetScaledValues(iPointsY, 0, height);
+            iPointsY = Converters.GetScaledValues(iPointsY, _originOffset, height);
 
             var convertedIntegralPoints = new List<PointF>(iPointsX.Count / 2);
             convertedIntegralPoints.AddRange(iPointsX.Select((t, i) => new PointF(t, iPointsY[i])));
@@ -179,19 +186,45 @@ namespace FunctionPlotter
                 convertedIntegralPoints.GetRange(convertedIntegralPoints.Count / 2, convertedIntegralPoints.Count / 2),
                 (u, l) => (u, l)).ToList();
 
-            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), 0,
+            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), _originOffset,
                 width);
 
-            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), 0,
+            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), _originOffset,
                 height);
 
             var convertedPoints = new List<PointF>(pointsX.Count);
             convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
 
+            _painter.DrawAxis((int) _originOffset);
             _painter.DrawFunction(convertedPoints);
             _painter.DrawIntegral(rectanglePoints);
 
+            DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
+            DrawScale(points.Select(point => point.Y).Min(), points.Select(point => point.Y).Max(), width, height, "y");
+
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
+        }
+
+        private void DrawScale(double min, double max, int width, int height, string mode)
+        {
+            if (mode == "x")
+            {
+                _painter.ResetTransform();
+                _painter.DrawString(new PointF(_originOffset, height - _originOffset + _fontSize),
+                    Math.Round(min, 2).ToString(CultureInfo.InvariantCulture),
+                    _fontSize);
+                _painter.DrawString(new PointF(width - _originOffset + _fontSize, height - _originOffset + _fontSize),
+                    Math.Round(max, 2).ToString(CultureInfo.InvariantCulture),
+                    _fontSize);
+            }
+            else
+            {
+                _painter.ResetTransform();
+                _painter.DrawString(new PointF(0, height - _fontSize - _originOffset),
+                    Math.Round(min, 2).ToString(CultureInfo.InvariantCulture), _fontSize);
+                _painter.DrawString(new PointF(0, 0), Math.Round(max, 2).ToString(CultureInfo.InvariantCulture),
+                    _fontSize);
+            }
         }
     }
 }
