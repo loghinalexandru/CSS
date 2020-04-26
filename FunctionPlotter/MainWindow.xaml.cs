@@ -20,6 +20,7 @@ namespace FunctionPlotter
 
         private Painter _painter;
         private Function _function;
+        private FiniteStateAutomatonValidator _validator;
         private readonly float _originOffset = 25;
         private readonly int _fontSize = 8;
 
@@ -31,6 +32,7 @@ namespace FunctionPlotter
             InitParenthesesComboBox();
             InitVariableComboBox();
             SetGlobalExceptionHandling();
+            SetValidator();
 
             FunctionsComboBox.SelectionChanged += HandleSelectionChanged;
             FunctionsComboBox.DropDownOpened += HandleDropDownOpened;
@@ -45,6 +47,7 @@ namespace FunctionPlotter
             VariableComboBox.DropDownOpened += HandleDropDownOpened;
 
             SizeChanged += Draw_OnClick;
+
 
             PlotterViewModel = new FunctionPlotterViewModel();
             DataContext = PlotterViewModel;
@@ -84,7 +87,15 @@ namespace FunctionPlotter
 
         private void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            PlotterViewModel.AddComponent(((ComboBox) sender).SelectedItem as GraphObject);
+            var selectedItem = ((ComboBox) sender).SelectedItem as GraphObject;
+
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            PlotterViewModel.AddComponent(selectedItem);
+            _validator.DoTransition(selectedItem);
 
             CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
@@ -95,7 +106,12 @@ namespace FunctionPlotter
             if (((ComboBox) sender).SelectedItem is ConstantObject)
             {
                 var result = new InputBox().ShowAndWaitForResult();
-                PlotterViewModel.AddComponent(new ConstantObject(result));
+                var item = new ConstantObject(result);
+
+                PlotterViewModel.AddComponent(item);
+
+                _validator.DoTransition(item);
+
                 CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
 
                 return;
@@ -112,6 +128,7 @@ namespace FunctionPlotter
         private void HandleRemoveButton(object sender, RoutedEventArgs e)
         {
             PlotterViewModel.RemoveComponent();
+            _validator.DoTransition(PlotterViewModel.GetLast());
             CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
 
@@ -235,6 +252,17 @@ namespace FunctionPlotter
                 MessageBox.Show(ex.Exception.Message);
                 ex.Handled = true;
             };
+        }
+
+        private void SetValidator()
+        {
+            _validator = new FiniteStateAutomatonValidator(new List<ComboBox>()
+            {
+                ParenthesesComboBox,
+                VariableComboBox,
+                OperatorsComboBox,
+                FunctionsComboBox
+            });
         }
     }
 }
