@@ -1,6 +1,7 @@
 ﻿using FunctionPlotter.Domain;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace FunctionPlotter
 {
@@ -42,6 +43,11 @@ namespace FunctionPlotter
         public List<GraphObject> GetFunction()
         {
             return _compositeFunction;
+        }
+
+        public GraphObject GetLast()
+        {
+            return _compositeFunction.Count > 0 ? _compositeFunction.Last() : null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
