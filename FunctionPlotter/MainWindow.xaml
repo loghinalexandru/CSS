@@ -13,6 +13,7 @@
             <ColumnDefinition Width="0.15*" />
             <ColumnDefinition Width="0.15*" />
             <ColumnDefinition Width="0.15*" />
+            <ColumnDefinition Width="0.15*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.1*" />
@@ -20,19 +21,19 @@
             <RowDefinition Height="0.1*" />
         </Grid.RowDefinitions>
         <TextBox VerticalContentAlignment="Center" Grid.Row="0" Name="CompositeFunction" Margin="5,5,5,5"
-                 Grid.ColumnSpan="1" IsReadOnly="True" />
-        <Button Grid.Row="0" Grid.Column="5" Margin="5,5,5,5" Click="HandleRemoveButton">
+                 Grid.ColumnSpan="2" IsReadOnly="True" />
+        <Button Grid.Row="0" Grid.Column="6" Margin="5,5,5,5" Click="HandleRemoveButton">
             <TextBlock>
                 <Bold>C</Bold>
             </TextBlock>
         </Button>
-        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" Name="OperatorsComboBox"
+        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="4" Name="OperatorsComboBox"
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="4" Name="FunctionsComboBox"
+        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="5" Name="FunctionsComboBox"
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" Name="VariableComboBox"
+        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" Name="VariableComboBox"
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Name="ParenthesesComboBox"
+        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" Name="ParenthesesComboBox"
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
         <CheckBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="2" Grid.Column="4"
                   Margin="5,5,5,5"
@@ -40,7 +41,7 @@
             <Bold>&#8747;(x)</Bold>
         </CheckBox>
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Margin="5,5,5,5" Grid.ColumnSpan="1" Grid.Column="1"
-                 Text="{Binding Path=Min}" />
+                 Text="{Binding Path=Min}"  />
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" Grid.ColumnSpan="1"
                  Text="{Binding Path=Max}" />
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="3" Margin="5,5,5,5" Grid.ColumnSpan="1"
@@ -51,11 +52,12 @@
                 <Bold>Draw</Bold>
             </TextBlock>
         </Button>
-        <Button VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" Click="Export_Click" FontWeight="Bold" Margin="5,5,5,5" Grid.ColumnSpan="1">
+        <Button VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="6" Click="Export_Click" FontWeight="Bold"
+                Margin="5,5,5,5" Grid.ColumnSpan="1">
             <TextBlock>
                 <Bold>Export</Bold>
             </TextBlock>
         </Button>
-        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="6" Grid.RowSpan="1" />
+        <Image Grid.Row="1" Name="FunctionImage" Margin="5,5,5,5" Grid.ColumnSpan="7" Grid.RowSpan="1" />
     </Grid>
 </Window>

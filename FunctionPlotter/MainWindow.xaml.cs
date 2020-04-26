@@ -49,7 +49,6 @@ namespace FunctionPlotter
 
             SizeChanged += Draw_OnClick;
 
-
             PlotterViewModel = new FunctionPlotterViewModel();
             DataContext = PlotterViewModel;
         }

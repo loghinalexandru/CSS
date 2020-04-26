@@ -14,6 +14,7 @@ namespace FunctionPlotter.Helpers
         public FiniteStateAutomatonValidator(List<ComboBox> states)
         {
             _states = states;
+            EnableValidTransitions();
         }
 
         public void DoTransition(GraphObject nextState)
@@ -56,7 +57,10 @@ namespace FunctionPlotter.Helpers
                     EnableState(3);
                     break;
                 case null:
-                    _states.ForEach(state => state.IsEnabled = true);
+                    DisableAllStates();
+                    EnableState(0);
+                    EnableState(1);
+                    EnableState(3);
                     break;
             }
         }
