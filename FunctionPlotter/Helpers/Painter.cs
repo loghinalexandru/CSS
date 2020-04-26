@@ -54,6 +54,11 @@ namespace FunctionPlotter.Helpers
             return _bitmap;
         }
 
+        public void SaveImage(string filePath)
+        {
+            _bitmap.Save(filePath);
+        }
+
         private void DrawLine(PointF firstPoint, PointF secondPoint)
         {
             _graphics.DrawLine(new Pen(Brushes.Black, 2), firstPoint, secondPoint);

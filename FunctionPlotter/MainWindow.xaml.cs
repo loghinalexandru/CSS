@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 
 namespace FunctionPlotter
 {
@@ -135,6 +136,44 @@ namespace FunctionPlotter
 
             _function = new Function(PlotterViewModel.GetFunction());
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_function == null)
+                {
+                    MessageBox.Show("There is no data available to export.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    return;
+                }
+
+                
+                SaveFileDialog exportDialog = new SaveFileDialog();
+                exportDialog.Filter = "csv files (*.csv)|*.csv|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|All files (*.*)|*.*";
+
+                if (exportDialog.ShowDialog() == true)
+                {
+                    if (exportDialog.FileName.EndsWith(".csv"))
+                    {
+                        var points = _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
+                        Exporter.ExportAsCsv(exportDialog.FileName, points);
+                        MessageBox.Show("Data has been sucessfully exported to CSV file", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        _painter.SaveImage(exportDialog.FileName);
+                        MessageBox.Show("Function Graph has been sucessfully exported to image file", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Info.  
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.Write(ex);
+            }
         }
 
         private void DrawFunctionPlot(int width, int height)
