@@ -30,6 +30,7 @@ namespace FunctionPlotter
             InitOperatorsComboBox();
             InitParenthesesComboBox();
             InitVariableComboBox();
+            SetGlobalExceptionHandling();
 
             FunctionsComboBox.SelectionChanged += HandleSelectionChanged;
             FunctionsComboBox.DropDownOpened += HandleDropDownOpened;
@@ -225,6 +226,15 @@ namespace FunctionPlotter
                 _painter.DrawString(new PointF(0, 0), Math.Round(max, 2).ToString(CultureInfo.InvariantCulture),
                     _fontSize);
             }
+        }
+
+        private void SetGlobalExceptionHandling()
+        {
+            Application.Current.DispatcherUnhandledException += (s, ex) =>
+            {
+                MessageBox.Show(ex.Exception.Message);
+                ex.Handled = true;
+            };
         }
     }
 }
