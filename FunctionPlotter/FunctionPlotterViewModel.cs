@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.VisualBasic;
 
 namespace FunctionPlotter
 {
@@ -9,6 +10,10 @@ namespace FunctionPlotter
     {
         public double Min { get; set; }
         public double Max { get; set; }
+
+        public double MinY => -5;
+        public double MaxY => 5;
+
         public double StepSize { get; set; }
         public bool DrawIntegral { get; set; }
 

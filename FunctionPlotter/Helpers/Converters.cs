@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,12 @@ namespace FunctionPlotter.Helpers
 
             var minValue = points.Min();
             var maxValue = points.Max();
+
+            if (Math.Abs(minValue - maxValue) < 1e-3)
+            {
+                minValue -= 5;
+                maxValue += 5;
+            }
 
             foreach (var point in points)
             {

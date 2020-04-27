@@ -140,6 +140,14 @@ namespace FunctionPlotter
                 return;
             }
 
+            //if (PlotterViewModel.GetFunction()
+            //        .FirstOrDefault(graphObject => graphObject.GraphObjectType == GraphObjectType.Variable) == null)
+            //{
+            //    MessageBox.Show("Constant functions cannot be plotted", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            //    return;
+            //}
+
             _function = new Function(PlotterViewModel.GetFunction());
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
@@ -197,7 +205,17 @@ namespace FunctionPlotter
             var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), _originOffset,
                 width);
 
-            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), _originOffset,
+            var functionPointsY = points.Select(entry => entry.Y).ToList();
+            var minY = functionPointsY.Min();
+            var maxY = functionPointsY.Max();
+
+            if (Math.Abs(minY - maxY) < 0.001)
+            {
+                functionPointsY.Add(minY + (float)PlotterViewModel.MinY);
+                functionPointsY.Add(maxY + (float)PlotterViewModel.MaxY);
+            }
+
+            var pointsY = Converters.GetScaledValues(functionPointsY, _originOffset,
                 height);
 
             var convertedPoints = new List<PointF>(pointsX.Count);
@@ -207,7 +225,16 @@ namespace FunctionPlotter
             _painter.DrawFunction(convertedPoints);
 
             DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
-            DrawScale(points.Select(point => point.Y).Min(), points.Select(point => point.Y).Max(), width, height, "y");
+            if (Math.Abs(minY - maxY) < 0.001)
+            {
+                DrawScale(minY + (float) PlotterViewModel.MinY, maxY + (float) PlotterViewModel.MaxY, width, height,
+                    "y");
+            }
+            else
+            {
+                DrawScale(minY, maxY, width, height,
+                    "y");
+            }
 
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }
@@ -218,6 +245,11 @@ namespace FunctionPlotter
 
             var points =
                 _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
+
+            var functionPointsY = points.Select(entry => entry.Y).ToList();
+            var minY = functionPointsY.Min();
+            var maxY = functionPointsY.Max();
+
             var integralPoints = _function.GetIntegralPoints(points);
 
             var upperLeftPoints = integralPoints.Select(entry => entry.Item1).ToList();
@@ -229,6 +261,13 @@ namespace FunctionPlotter
 
             var iPointsY = upperLeftPoints.Select(entry => entry.Y).ToList();
             iPointsY.AddRange(lowerRightPoints.Select(entry => entry.Y));
+
+            if (Math.Abs(minY - maxY) < 0.001)
+            {
+                iPointsY.Add(minY + (float)PlotterViewModel.MinY);
+                iPointsY.Add(maxY + (float)PlotterViewModel.MaxY);
+            }
+
             iPointsY = Converters.GetScaledValues(iPointsY, _originOffset, height);
 
             var convertedIntegralPoints = new List<PointF>(iPointsX.Count / 2);
@@ -251,7 +290,14 @@ namespace FunctionPlotter
             _painter.DrawIntegral(rectanglePoints);
 
             DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
-            DrawScale(points.Select(point => point.Y).Min(), points.Select(point => point.Y).Max(), width, height, "y");
+            if (Math.Abs(minY - maxY) < 0.001)
+            {
+                DrawScale(minY + (float)PlotterViewModel.MinY, maxY + (float)PlotterViewModel.MaxY, width, height, "y");
+            }
+            else
+            {
+                DrawScale(minY, maxY, width, height, "y");
+            }
 
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }

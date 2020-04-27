@@ -44,6 +44,15 @@ namespace FunctionPlotter.Helpers
             var minY = pointsY.Min();
             var maxY = pointsY.Max();
 
+            if (Math.Abs(minY - maxY) < 0.001)
+            {
+                if (minY > 0)
+                    minY = 0;
+
+                if (maxY < 0)
+                    maxY = 0;
+            }
+
             for (var i = 0; i < functionPoints.Count - 1; i += 1)
             {
                 PointF upperLeftPoint;
