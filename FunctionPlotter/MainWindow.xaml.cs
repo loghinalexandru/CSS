@@ -1,6 +1,7 @@
 ﻿using FunctionPlotter.Domain;
 using FunctionPlotter.Domain.Models;
 using FunctionPlotter.Helpers;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +9,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
 
 namespace FunctionPlotter
 {
@@ -30,7 +30,6 @@ namespace FunctionPlotter
             InitializeComponent();
             InitFunctionsComboBox();
             InitOperatorsComboBox();
-            InitParenthesesComboBox();
             InitVariableComboBox();
             SetGlobalExceptionHandling();
             SetValidator();
@@ -40,9 +39,6 @@ namespace FunctionPlotter
 
             OperatorsComboBox.SelectionChanged += HandleSelectionChanged;
             OperatorsComboBox.DropDownOpened += HandleDropDownOpened;
-
-            ParenthesesComboBox.SelectionChanged += HandleSelectionChanged;
-            ParenthesesComboBox.DropDownOpened += HandleDropDownOpened;
 
             VariableComboBox.SelectionChanged += HandleSelectionChangedOnVariable;
             VariableComboBox.DropDownOpened += HandleDropDownOpened;
@@ -71,12 +67,6 @@ namespace FunctionPlotter
             OperatorsComboBox.Items.Add(new OperatorObject("/"));
             OperatorsComboBox.Items.Add(new OperatorObject("*"));
             OperatorsComboBox.Items.Add(new OperatorObject("^"));
-        }
-
-        private void InitParenthesesComboBox()
-        {
-            ParenthesesComboBox.Items.Add(new LeftParenthesesObject());
-            ParenthesesComboBox.Items.Add(new RightParenthesesObject());
         }
 
         private void InitVariableComboBox()
@@ -160,27 +150,32 @@ namespace FunctionPlotter
             {
                 if (_function == null)
                 {
-                    MessageBox.Show("There is no data available to export.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("There is no data available to export.", "Warning", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
 
                     return;
                 }
 
-                
+
                 SaveFileDialog exportDialog = new SaveFileDialog();
-                exportDialog.Filter = "csv files (*.csv)|*.csv|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|All files (*.*)|*.*";
+                exportDialog.Filter =
+                    "csv files (*.csv)|*.csv|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|All files (*.*)|*.*";
 
                 if (exportDialog.ShowDialog() == true)
                 {
                     if (exportDialog.FileName.EndsWith(".csv"))
                     {
-                        var points = _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
+                        var points = _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max,
+                            PlotterViewModel.StepSize);
                         Exporter.ExportAsCsv(exportDialog.FileName, points);
-                        MessageBox.Show("Data has been sucessfully exported to CSV file", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Data has been sucessfully exported to CSV file", "Success",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         _painter.SaveImage(exportDialog.FileName);
-                        MessageBox.Show("Function Graph has been sucessfully exported to image file", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Function Graph has been sucessfully exported to image file", "Success",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
             }
@@ -294,13 +289,32 @@ namespace FunctionPlotter
 
         private void SetValidator()
         {
-            _validator = new FiniteStateAutomatonValidator(new List<ComboBox>()
+            _validator = new FiniteStateAutomatonValidator(new List<Control>()
             {
-                ParenthesesComboBox,
+                LeftParentheses,
+                RightParentheses,
                 VariableComboBox,
                 OperatorsComboBox,
                 FunctionsComboBox
             });
+        }
+
+        private void RightParentheses_OnClick(object sender, RoutedEventArgs e)
+        {
+            var item = new RightParenthesesObject();
+
+            PlotterViewModel.AddComponent(item);
+            _validator.DoTransition(item);
+            CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
+        }
+
+        private void LeftParentheses_OnClick(object sender, RoutedEventArgs e)
+        {
+            var item = new LeftParenthesesObject();
+
+            PlotterViewModel.AddComponent(item);
+            _validator.DoTransition(item);
+            CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
     }
 }

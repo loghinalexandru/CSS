@@ -8,10 +8,11 @@ namespace FunctionPlotter.Helpers
     public sealed class FiniteStateAutomatonValidator
     {
         // Predefined Order = (),var,op,func
-        private List<ComboBox> _states;
+        private List<Control> _states;
         private GraphObject _currentState;
+        private double _openBracketCounter = 0;
 
-        public FiniteStateAutomatonValidator(List<ComboBox> states)
+        public FiniteStateAutomatonValidator(List<Control> states)
         {
             _states = states;
             EnableValidTransitions();
@@ -29,38 +30,38 @@ namespace FunctionPlotter.Helpers
             {
                 case OperatorObject op:
                     DisableAllStates();
-                    EnableState(1);
-                    EnableState(3);
+                    EnableState(2);
+                    EnableState(4);
                     break;
                 case VariableObject var:
                     DisableAllStates();
-                    EnableState(2);
-                    EnableState(0);
+                    EnableState(3);
+                    EnableState(1);
                     break;
                 case ConstantObject constant:
                     DisableAllStates();
-                    EnableState(2);
-                    EnableState(0);
+                    EnableState(3);
+                    EnableState(1);
                     break;
                 case FunctionObject func:
                     DisableAllStates();
-                    EnableState(1);
+                    EnableState(2);
                     EnableState(0);
                     break;
                 case RightParenthesesObject rightpar:
                     DisableAllStates();
-                    EnableState(2);
+                    EnableState(3);
                     break;
                 case LeftParenthesesObject leftpar:
                     DisableAllStates();
-                    EnableState(1);
-                    EnableState(3);
+                    EnableState(2);
+                    EnableState(4);
                     break;
                 case null:
                     DisableAllStates();
                     EnableState(0);
-                    EnableState(1);
-                    EnableState(3);
+                    EnableState(2);
+                    EnableState(4);
                     break;
             }
         }

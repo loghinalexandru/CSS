@@ -21,7 +21,7 @@
             <RowDefinition Height="0.1*" />
         </Grid.RowDefinitions>
         <TextBox VerticalContentAlignment="Center" Grid.Row="0" Name="CompositeFunction" Margin="5,5,5,5"
-                 Grid.ColumnSpan="2" IsReadOnly="True" />
+                 Grid.ColumnSpan="1" IsReadOnly="True" />
         <Button Grid.Row="0" Grid.Column="6" Margin="5,5,5,5" Click="HandleRemoveButton">
             <TextBlock>
                 <Bold>C</Bold>
@@ -33,15 +33,23 @@
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
         <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" Name="VariableComboBox"
                   Margin="5,5,5,5" Grid.ColumnSpan="1" />
-        <ComboBox VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" Name="ParenthesesComboBox"
-                  Margin="5,5,5,5" Grid.ColumnSpan="1" />
+        <Button VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="2"
+                Name="RightParentheses" Click="RightParentheses_OnClick"
+                Margin="5,5,5,5" Grid.ColumnSpan="1">
+            <Bold>)</Bold>
+        </Button>
+        <Button VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="1"
+                Name="LeftParentheses" Click="LeftParentheses_OnClick"
+                Margin="5,5,5,5" Grid.ColumnSpan="1">
+            <Bold>(</Bold>
+        </Button>
         <CheckBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="2" Grid.Column="4"
                   Margin="5,5,5,5"
                   IsChecked="{Binding Path=DrawIntegral}">
             <Bold>&#8747;(x)</Bold>
         </CheckBox>
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Margin="5,5,5,5" Grid.ColumnSpan="1" Grid.Column="1"
-                 Text="{Binding Path=Min}"  />
+                 Text="{Binding Path=Min}" />
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" Grid.ColumnSpan="1"
                  Text="{Binding Path=Max}" />
         <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="3" Margin="5,5,5,5" Grid.ColumnSpan="1"
