@@ -42,7 +42,7 @@ namespace FunctionPlotter.Helpers
             {
                 var newValue = (scaledMax - scaledMin) * (point - minValue) / (maxValue - minValue) + scaledMin;
 
-                result.Add((int)newValue);
+                result.Add((float)newValue);
             }
 
             return result;
