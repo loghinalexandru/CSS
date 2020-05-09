@@ -1,10 +1,9 @@
-using System.Globalization;
 using FunctionPlotter.Domain.Models;
 using NUnit.Framework;
+using System.Globalization;
 
 namespace FunctionPlotter.Domain.Tests
 {
-    [TestFixture]
     public class ConstantObjectTests
     {
         [SetUp]
@@ -23,6 +22,7 @@ namespace FunctionPlotter.Domain.Tests
 
             //Assert
             Assert.AreEqual(newValue, constantObject.Value);
+            Assert.AreEqual(GraphObjectType.Constant, constantObject.GraphObjectType);
         }
 
 
@@ -37,6 +37,7 @@ namespace FunctionPlotter.Domain.Tests
 
             //Assert
             Assert.AreEqual(newValue, constantObject.Value);
+            Assert.AreEqual(GraphObjectType.Constant, constantObject.GraphObjectType);
         }
 
         [Test]
@@ -51,6 +52,7 @@ namespace FunctionPlotter.Domain.Tests
 
             //Assert
             Assert.AreEqual(result, newValue.ToString(CultureInfo.InvariantCulture));
+
         }
         [Test]
 

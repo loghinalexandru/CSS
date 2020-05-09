@@ -5,7 +5,7 @@ namespace FunctionPlotter.Domain.Models
     public sealed class FunctionObject : GraphObject
     {
         public Func<double, double> Value { get; }
-        public string FunctionName { get; set; }
+        public string FunctionName { get; }
 
         public FunctionObject(Func<double, double> function)
         {
