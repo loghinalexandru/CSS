@@ -25,7 +25,6 @@ namespace FunctionPlotter.Domain.Tests
             Assert.AreEqual(GraphObjectType.Constant, constantObject.GraphObjectType);
         }
 
-
         [Test]
         public void Constructor_WhenCalledWithNull_ValueIsSet()
         {

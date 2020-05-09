@@ -49,7 +49,7 @@ namespace FunctionPlotter
             DataContext = PlotterViewModel;
         }
 
-        private void InitFunctionsComboBox()
+        public void InitFunctionsComboBox()
         {
             FunctionsComboBox.Items.Add(new FunctionObject(Math.Sin));
             FunctionsComboBox.Items.Add(new FunctionObject(Math.Cos));
@@ -60,7 +60,7 @@ namespace FunctionPlotter
             FunctionsComboBox.Items.Add(new FunctionObject(Math.Exp));
         }
 
-        private void InitOperatorsComboBox()
+        public void InitOperatorsComboBox()
         {
             OperatorsComboBox.Items.Add(new OperatorObject("+"));
             OperatorsComboBox.Items.Add(new OperatorObject("-"));
@@ -69,13 +69,13 @@ namespace FunctionPlotter
             OperatorsComboBox.Items.Add(new OperatorObject("^"));
         }
 
-        private void InitVariableComboBox()
+        public void InitVariableComboBox()
         {
             VariableComboBox.Items.Add(new VariableObject());
             VariableComboBox.Items.Add(new ConstantObject(null));
         }
 
-        private void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        public void HandleSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
             var selectedItem = ((ComboBox) sender).SelectedItem as GraphObject;
 
@@ -90,7 +90,7 @@ namespace FunctionPlotter
             CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
 
-        private void HandleSelectionChangedOnVariable(object sender,
+        public void HandleSelectionChangedOnVariable(object sender,
             SelectionChangedEventArgs selectionChangedEventArgs)
         {
             if (((ComboBox) sender).SelectedItem is ConstantObject)
@@ -110,7 +110,7 @@ namespace FunctionPlotter
             HandleSelectionChanged(sender, selectionChangedEventArgs);
         }
 
-        private void HandleDropDownOpened(object sender, EventArgs e)
+        public void HandleDropDownOpened(object sender, EventArgs e)
         {
             ((ComboBox) sender).SelectedItem = null;
         }
@@ -122,7 +122,7 @@ namespace FunctionPlotter
             CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
 
-        private void Draw(int width, int height)
+        public void Draw(int width, int height)
         {
             if (PlotterViewModel.DrawIntegral)
             {
@@ -133,7 +133,7 @@ namespace FunctionPlotter
             DrawFunctionPlot(width, height);
         }
 
-        private void Draw_OnClick(object sender, RoutedEventArgs e)
+        public void Draw_OnClick(object sender, RoutedEventArgs e)
         {
             if (PlotterViewModel.GetFunction().Count == 0)
             {
@@ -152,7 +152,7 @@ namespace FunctionPlotter
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
 
-        private void Export_Click(object sender, RoutedEventArgs e)
+        public void Export_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -195,7 +195,7 @@ namespace FunctionPlotter
             }
         }
 
-        private void DrawFunctionPlot(int width, int height)
+        public void DrawFunctionPlot(int width, int height)
         {
             _painter = new Painter(width, height);
 
@@ -239,7 +239,7 @@ namespace FunctionPlotter
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }
 
-        private void DrawIntegralFunctionPlot(int width, int height)
+        public void DrawIntegralFunctionPlot(int width, int height)
         {
             _painter = new Painter(width, height);
 
@@ -302,7 +302,7 @@ namespace FunctionPlotter
             FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
         }
 
-        private void DrawScale(double min, double max, int width, int height, string mode)
+        public void DrawScale(double min, double max, int width, int height, string mode)
         {
             if (mode == "x")
             {
@@ -324,7 +324,7 @@ namespace FunctionPlotter
             }
         }
 
-        private void SetGlobalExceptionHandling()
+        public void SetGlobalExceptionHandling()
         {
             Application.Current.DispatcherUnhandledException += (s, ex) =>
             {
@@ -333,7 +333,7 @@ namespace FunctionPlotter
             };
         }
 
-        private void SetValidator()
+        public void SetValidator()
         {
             _validator = new FiniteStateAutomatonValidator(new List<Control>()
             {
@@ -345,7 +345,7 @@ namespace FunctionPlotter
             });
         }
 
-        private void RightParentheses_OnClick(object sender, RoutedEventArgs e)
+        public void RightParentheses_OnClick(object sender, RoutedEventArgs e)
         {
             var item = new RightParenthesesObject();
 
@@ -354,7 +354,7 @@ namespace FunctionPlotter
             CompositeFunction.Text = PlotterViewModel.GetCompositeFunction();
         }
 
-        private void LeftParentheses_OnClick(object sender, RoutedEventArgs e)
+        public void LeftParentheses_OnClick(object sender, RoutedEventArgs e)
         {
             var item = new LeftParenthesesObject();
 
