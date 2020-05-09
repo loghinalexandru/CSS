@@ -17,7 +17,7 @@ namespace FunctionPlotter.Helpers
             Init();
         }
 
-        private void Init()
+        public void Init()
         {
             _graphics.ScaleTransform(1.0F, -1.0F);
             _graphics.TranslateTransform(0.0F, -_bitmap.Height);
