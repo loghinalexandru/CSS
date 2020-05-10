@@ -81,7 +81,6 @@ namespace FunctionPlotter
             {
                 DrawScale(minY, maxY, width, height, "y");
             }
-
         }
 
         public void DrawFunctionPlot(int width, int height)

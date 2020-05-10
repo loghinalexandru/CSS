@@ -4,9 +4,6 @@ using FunctionPlotter.Helpers;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using FunctionPlotter.Domain.Interfaces;
@@ -128,8 +125,10 @@ namespace FunctionPlotter
             {
                 _plotter.DrawIntegralFunctionPlot(width, height);
             }
-
-            _plotter.DrawFunctionPlot(width, height);
+            else
+            {
+                _plotter.DrawFunctionPlot(width, height);
+            }
 
             FunctionImage.Source = _plotter.GetFunctionImage();
         }
