@@ -18,10 +18,10 @@ namespace FunctionPlotter
     /// </summary>
     public partial class MainWindow : Window
     {
-        public FunctionPlotterViewModel PlotterViewModel { get; }
 
-        private FiniteStateAutomatonValidator _validator;
-        private FunctionPlotter _plotter;
+        private IFiniteStateAutomatonValidator _validator;
+        private IFunctionPlotter _plotter;
+        private FunctionPlotterViewModel PlotterViewModel { get; }
 
         public MainWindow()
         {

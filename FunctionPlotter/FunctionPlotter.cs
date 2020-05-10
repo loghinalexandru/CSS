@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace FunctionPlotter
 {
-    public sealed class FunctionPlotter
+    public sealed class FunctionPlotter : IFunctionPlotter
     {
         private readonly IPainter _painter;
         private readonly IFunction _function;
@@ -124,7 +124,7 @@ namespace FunctionPlotter
             }
         }
 
-        public void DrawScale(double min, double max, int width, int height, string mode)
+        private void DrawScale(double min, double max, int width, int height, string mode)
         {
             if (mode == "x")
             {

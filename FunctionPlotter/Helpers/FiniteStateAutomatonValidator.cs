@@ -2,15 +2,15 @@
 using FunctionPlotter.Domain.Models;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter.Helpers
 {
-    public sealed class FiniteStateAutomatonValidator
+    public sealed class FiniteStateAutomatonValidator : IFiniteStateAutomatonValidator
     {
         // Predefined Order = (),var,op,func
-        private List<Control> _states;
+        private readonly List<Control> _states;
         private GraphObject _currentState;
-        private double _openBracketCounter = 0;
 
         public FiniteStateAutomatonValidator(List<Control> states)
         {
