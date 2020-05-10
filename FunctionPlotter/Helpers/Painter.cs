@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace FunctionPlotter.Helpers
 {
@@ -82,6 +83,12 @@ namespace FunctionPlotter.Helpers
         public void ResetTransform()
         {
             _graphics.ResetTransform();
+        }
+
+        public Matrix GetTransform()
+        {
+            return
+                _graphics.Transform;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace FunctionPlotter.Helpers.Tests
@@ -99,6 +100,43 @@ namespace FunctionPlotter.Helpers.Tests
             Assert.IsTrue(result != null);
             Assert.IsTrue(Enumerable.Range(0, maxWidth).ToList().Any(width =>
                 Enumerable.Range(0, maxHeight).Any(height => IsGreenPixel(result, width, height))));
+        }
+
+        [Test]
+        public void DrawString_WhenCalled_StringIsDrawn()
+        {
+            //Arrange
+            var maxWidth = 800;
+            var maxHeight = 600;
+            var stringDrawPoint = new PointF(10, 10);
+            var painter = new Painter(maxWidth, maxHeight);
+
+            //Act
+            painter.DrawString(stringDrawPoint,"TestInput", 10);
+            var result = painter.GetBitmap();
+
+            //Assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(Enumerable.Range(0, maxWidth).ToList().Any(width =>
+                Enumerable.Range(0, maxHeight).Any(height => IsBlackPixel(result, width, height))));
+        }
+
+        [Test]
+        public void ResetTransform_WhenCalled_TransformIsReset()
+        {
+            //Arrange
+            var maxWidth = 800;
+            var maxHeight = 600;
+            var stringDrawPoint = new PointF(10, 10);
+            var painter = new Painter(maxWidth, maxHeight);
+
+            //Act
+            painter.ResetTransform();
+            var transformMatrix = painter.GetTransform();
+
+            //Assert
+            Assert.IsTrue(transformMatrix != null);
+            Assert.IsTrue(transformMatrix.IsIdentity);
         }
 
         private bool IsWhitePixel(Bitmap bitmap, int width, int height)

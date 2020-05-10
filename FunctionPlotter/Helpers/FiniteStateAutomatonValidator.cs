@@ -66,14 +66,19 @@ namespace FunctionPlotter.Helpers
             }
         }
 
-        private void DisableAllStates()
+        public void DisableAllStates()
         {
             _states.ForEach(state => state.IsEnabled = false);
         }
 
-        private void EnableState(int stateIndex)
+        public void EnableState(int stateIndex)
         {
             _states[stateIndex].IsEnabled = true;
+        }
+
+        public List<Control> GetUiElements()
+        {
+            return _states;
         }
     }
 }
