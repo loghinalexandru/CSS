@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter.Helpers
 {
-    public sealed class Function
+    public sealed class Function : IFunction
     {
         private readonly Queue<GraphObject> _rpnQueue;
 

@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter
 {
@@ -19,11 +20,8 @@ namespace FunctionPlotter
     {
         public FunctionPlotterViewModel PlotterViewModel { get; }
 
-        private Painter _painter;
-        private Function _function;
         private FiniteStateAutomatonValidator _validator;
-        private readonly float _originOffset = 25;
-        private readonly int _fontSize = 8;
+        private FunctionPlotter _plotter;
 
         public MainWindow()
         {
@@ -124,13 +122,16 @@ namespace FunctionPlotter
 
         public void Draw(int width, int height)
         {
+            _plotter = new FunctionPlotter(new Painter(width,height), new Function(PlotterViewModel.GetFunction()), PlotterViewModel);
+
             if (PlotterViewModel.DrawIntegral)
             {
-                DrawIntegralFunctionPlot(width, height);
-                return;
+                _plotter.DrawIntegralFunctionPlot(width, height);
             }
 
-            DrawFunctionPlot(width, height);
+            _plotter.DrawFunctionPlot(width, height);
+
+            FunctionImage.Source = _plotter.GetFunctionImage();
         }
 
         public void Draw_OnClick(object sender, RoutedEventArgs e)
@@ -140,15 +141,6 @@ namespace FunctionPlotter
                 return;
             }
 
-            //if (PlotterViewModel.GetFunction()
-            //        .FirstOrDefault(graphObject => graphObject.GraphObjectType == GraphObjectType.Variable) == null)
-            //{
-            //    MessageBox.Show("Constant functions cannot be plotted", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-            //    return;
-            //}
-
-            _function = new Function(PlotterViewModel.GetFunction());
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
 
@@ -156,7 +148,7 @@ namespace FunctionPlotter
         {
             try
             {
-                if (_function == null)
+                if (_plotter?.GetFunction() == null)
                 {
                     MessageBox.Show("There is no data available to export.", "Warning", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
@@ -164,16 +156,15 @@ namespace FunctionPlotter
                     return;
                 }
 
-
                 SaveFileDialog exportDialog = new SaveFileDialog();
                 exportDialog.Filter =
                     "csv files (*.csv)|*.csv|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|All files (*.*)|*.*";
-
+        
                 if (exportDialog.ShowDialog() == true)
                 {
                     if (exportDialog.FileName.EndsWith(".csv"))
                     {
-                        var points = _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max,
+                        var points = _plotter.GetFunction().GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max,
                             PlotterViewModel.StepSize);
                         Exporter.ExportAsCsv(exportDialog.FileName, points);
                         MessageBox.Show("Data has been sucessfully exported to CSV file", "Success",
@@ -181,7 +172,7 @@ namespace FunctionPlotter
                     }
                     else
                     {
-                        _painter.SaveImage(exportDialog.FileName);
+                        _plotter.GetPainter().SaveImage(exportDialog.FileName);
                         MessageBox.Show("Function Graph has been sucessfully exported to image file", "Success",
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -192,135 +183,6 @@ namespace FunctionPlotter
                 // Info.  
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Console.Write(ex);
-            }
-        }
-
-        public void DrawFunctionPlot(int width, int height)
-        {
-            _painter = new Painter(width, height);
-
-            var points =
-                _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
-
-            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), _originOffset,
-                width);
-
-            var functionPointsY = points.Select(entry => entry.Y).ToList();
-            var minY = functionPointsY.Min();
-            var maxY = functionPointsY.Max();
-
-            if (Math.Abs(minY - maxY) < 0.001)
-            {
-                functionPointsY.Add(minY + (float)PlotterViewModel.MinY);
-                functionPointsY.Add(maxY + (float)PlotterViewModel.MaxY);
-            }
-
-            var pointsY = Converters.GetScaledValues(functionPointsY, _originOffset,
-                height);
-
-            var convertedPoints = new List<PointF>(pointsX.Count);
-            convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
-
-            _painter.DrawAxis((int) _originOffset);
-            _painter.DrawFunction(convertedPoints);
-
-            DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
-            if (Math.Abs(minY - maxY) < 0.001)
-            {
-                DrawScale(minY + (float) PlotterViewModel.MinY, maxY + (float) PlotterViewModel.MaxY, width, height,
-                    "y");
-            }
-            else
-            {
-                DrawScale(minY, maxY, width, height,
-                    "y");
-            }
-
-            FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
-        }
-
-        public void DrawIntegralFunctionPlot(int width, int height)
-        {
-            _painter = new Painter(width, height);
-
-            var points =
-                _function.GetFunctionGraph(PlotterViewModel.Min, PlotterViewModel.Max, PlotterViewModel.StepSize);
-
-            var functionPointsY = points.Select(entry => entry.Y).ToList();
-            var minY = functionPointsY.Min();
-            var maxY = functionPointsY.Max();
-
-            var integralPoints = _function.GetIntegralPoints(points);
-
-            var upperLeftPoints = integralPoints.Select(entry => entry.Item1).ToList();
-            var lowerRightPoints = integralPoints.Select(entry => entry.Item2).ToList();
-
-            var iPointsX = upperLeftPoints.Select(entry => entry.X).ToList();
-            iPointsX.AddRange(lowerRightPoints.Select(entry => entry.X));
-            iPointsX = Converters.GetScaledValues(iPointsX, _originOffset, width);
-
-            var iPointsY = upperLeftPoints.Select(entry => entry.Y).ToList();
-            iPointsY.AddRange(lowerRightPoints.Select(entry => entry.Y));
-
-            if (Math.Abs(minY - maxY) < 0.001)
-            {
-                iPointsY.Add(minY + (float)PlotterViewModel.MinY);
-                iPointsY.Add(maxY + (float)PlotterViewModel.MaxY);
-            }
-
-            iPointsY = Converters.GetScaledValues(iPointsY, _originOffset, height);
-
-            var convertedIntegralPoints = new List<PointF>(iPointsX.Count / 2);
-            convertedIntegralPoints.AddRange(iPointsX.Select((t, i) => new PointF(t, iPointsY[i])));
-            var rectanglePoints = convertedIntegralPoints.GetRange(0, convertedIntegralPoints.Count / 2).Zip(
-                convertedIntegralPoints.GetRange(convertedIntegralPoints.Count / 2, convertedIntegralPoints.Count / 2),
-                (u, l) => (u, l)).ToList();
-
-            var pointsX = Converters.GetScaledValues(points.Select(entry => entry.X).ToList(), _originOffset,
-                width);
-
-            var pointsY = Converters.GetScaledValues(points.Select(entry => entry.Y).ToList(), _originOffset,
-                height);
-
-            var convertedPoints = new List<PointF>(pointsX.Count);
-            convertedPoints.AddRange(pointsX.Select((t, i) => new PointF(t, pointsY[i])));
-
-            _painter.DrawAxis((int) _originOffset);
-            _painter.DrawFunction(convertedPoints);
-            _painter.DrawIntegral(rectanglePoints);
-
-            DrawScale(PlotterViewModel.Min, PlotterViewModel.Max, width, height, "x");
-            if (Math.Abs(minY - maxY) < 0.001)
-            {
-                DrawScale(minY + (float)PlotterViewModel.MinY, maxY + (float)PlotterViewModel.MaxY, width, height, "y");
-            }
-            else
-            {
-                DrawScale(minY, maxY, width, height, "y");
-            }
-
-            FunctionImage.Source = Converters.BitmapToImageSource(_painter.GetBitmap());
-        }
-
-        public void DrawScale(double min, double max, int width, int height, string mode)
-        {
-            if (mode == "x")
-            {
-                _painter.ResetTransform();
-                _painter.DrawString(new PointF(_originOffset, height - _originOffset + _fontSize),
-                    Math.Round(min, 2).ToString(CultureInfo.InvariantCulture),
-                    _fontSize);
-                _painter.DrawString(new PointF(width - _originOffset + _fontSize, height - _originOffset + _fontSize),
-                    Math.Round(max, 2).ToString(CultureInfo.InvariantCulture),
-                    _fontSize);
-            }
-            else
-            {
-                _painter.ResetTransform();
-                _painter.DrawString(new PointF(0, height - _fontSize - _originOffset),
-                    Math.Round(min, 2).ToString(CultureInfo.InvariantCulture), _fontSize);
-                _painter.DrawString(new PointF(0, 0), Math.Round(max, 2).ToString(CultureInfo.InvariantCulture),
-                    _fontSize);
             }
         }
 

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using FunctionPlotter.Domain;
+using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter.Helpers
 {
-    public sealed class Painter
+    public sealed class Painter : IPainter
     {
         private readonly Graphics _graphics;
         private readonly Bitmap _bitmap;
