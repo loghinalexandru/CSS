@@ -1,2 +1,2 @@
 # CSS
-Repo for the upcoming code of the drawing app
+(Requirements Page)[https://profs.info.uaic.ro/~rvlad/lab/cs/proiect-cs.html]
