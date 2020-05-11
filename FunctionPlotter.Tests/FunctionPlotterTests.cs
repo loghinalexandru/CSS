@@ -135,6 +135,100 @@ namespace FunctionPlotter.Tests
             _painterMock.Verify(x => x.DrawString(It.IsAny<PointF>(), maxY, It.IsAny<int>()), Times.Once);
         }
 
+
+        [Test]
+        public void When_DrawFunctionPlotWithConstantFunction_ShouldDrawFunctionPlot()
+        {
+            //Arrange
+            const int width = 800;
+            const int height = 600;
+
+            var yValue = Math.Round(1d, 2);
+            var maxY = (yValue + _functionPlotterViewModel.MaxY).ToString(CultureInfo.InvariantCulture);
+            var minY = (yValue + _functionPlotterViewModel.MinY).ToString(CultureInfo.InvariantCulture);
+
+            var functionPoints = new List<PointF>
+            {
+                new PointF(-1, 1),
+                new PointF(0, 1),
+                new PointF(1, 1)
+            };
+            var integralRectangles = new List<(PointF, PointF)>
+            {
+                (new PointF(-1, 1), new PointF(0, 0)),
+                (new PointF(0, 1), new PointF(1, 0))
+            };
+
+            _painterMock.Setup(x => x.DrawAxis(It.IsAny<int>()));
+            _painterMock.Setup(x => x.DrawFunction(It.IsAny<List<PointF>>()));
+            _painterMock.Setup(x => x.ResetTransform());
+            _painterMock.Setup(x => x.DrawString(It.IsAny<PointF>(), It.IsAny<string>(), It.IsAny<int>()));
+
+            _functionMock
+                .Setup(x => x.GetFunctionGraph(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Returns(functionPoints);
+
+            //Act
+            _functionPlotter.DrawFunctionPlot(width, height);
+
+            //Assert
+            const int twice = 2;
+
+            _painterMock.Verify(x => x.DrawAxis(It.IsAny<int>()), Times.Once);
+            _painterMock.Verify(x => x.DrawFunction(It.IsAny<List<PointF>>()), Times.Once);
+            _painterMock.Verify(x => x.ResetTransform(), Times.Exactly(twice));
+            _painterMock.Verify(x => x.DrawString(It.IsAny<PointF>(), minY, It.IsAny<int>()), Times.Once);
+            _painterMock.Verify(x => x.DrawString(It.IsAny<PointF>(), maxY, It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public void When_DrawFunctionPlotWithNonConstantFunction_ShouldDrawFunctionPlot()
+        {
+            //Arrange
+            const int width = 800;
+            const int height = 600;
+
+            var maxY = Math.Round(2d, 2).ToString(CultureInfo.InvariantCulture);
+            var minY = Math.Round(-2d, 2).ToString(CultureInfo.InvariantCulture);
+
+            var functionPoints = new List<PointF>
+            {
+                new PointF(-2, -2),
+                new PointF(-1, -1),
+                new PointF(0, 0),
+                new PointF(1, 1),
+                new PointF(2, 2),
+            };
+            var integralRectangles = new List<(PointF, PointF)>
+            {
+                (new PointF(-2, 0), new PointF(-1, -1)),
+                (new PointF(-1, 0), new PointF(0, 0)),
+                (new PointF(0, 0), new PointF(1, 0)),
+                (new PointF(1, 1), new PointF(2, 1)),
+            };
+
+            _painterMock.Setup(x => x.DrawAxis(It.IsAny<int>()));
+            _painterMock.Setup(x => x.DrawFunction(It.IsAny<List<PointF>>()));
+            _painterMock.Setup(x => x.ResetTransform());
+            _painterMock.Setup(x => x.DrawString(It.IsAny<PointF>(), It.IsAny<string>(), It.IsAny<int>()));
+
+            _functionMock
+                .Setup(x => x.GetFunctionGraph(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Returns(functionPoints);
+
+            //Act
+            _functionPlotter.DrawFunctionPlot(width, height);
+
+            //Assert
+            const int twice = 2;
+
+            _painterMock.Verify(x => x.DrawAxis(It.IsAny<int>()), Times.Once);
+            _painterMock.Verify(x => x.DrawFunction(It.IsAny<List<PointF>>()), Times.Once);
+            _painterMock.Verify(x => x.ResetTransform(), Times.Exactly(twice));
+            _painterMock.Verify(x => x.DrawString(It.IsAny<PointF>(), minY, It.IsAny<int>()), Times.Once);
+            _painterMock.Verify(x => x.DrawString(It.IsAny<PointF>(), maxY, It.IsAny<int>()), Times.Once);
+        }
+
         public IFunctionPlotter CreateSystemUnderTest()
         {
             return new FunctionPlotter(_painterMock.Object, _functionMock.Object, _functionPlotterViewModel);

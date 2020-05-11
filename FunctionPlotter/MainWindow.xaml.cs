@@ -1,4 +1,5 @@
 ﻿using FunctionPlotter.Domain;
+using FunctionPlotter.Domain.Interfaces;
 using FunctionPlotter.Domain.Models;
 using FunctionPlotter.Helpers;
 using Microsoft.Win32;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter
 {
@@ -15,10 +15,9 @@ namespace FunctionPlotter
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        private IFiniteStateAutomatonValidator _validator;
-        private IFunctionPlotter _plotter;
-        private FunctionPlotterViewModel PlotterViewModel { get; }
+        public IFiniteStateAutomatonValidator _validator;
+        public IFunctionPlotter _plotter;
+        public FunctionPlotterViewModel PlotterViewModel { get; set; }
 
         public MainWindow()
         {
@@ -119,8 +118,6 @@ namespace FunctionPlotter
 
         public void Draw(int width, int height)
         {
-            _plotter = new FunctionPlotter(new Painter(width,height), new Function(PlotterViewModel.GetFunction()), PlotterViewModel);
-
             if (PlotterViewModel.DrawIntegral)
             {
                 _plotter.DrawIntegralFunctionPlot(width, height);
@@ -140,6 +137,9 @@ namespace FunctionPlotter
                 return;
             }
 
+            _plotter = new FunctionPlotter(new Painter((int)WindowGrid.ActualWidth, (int)WindowGrid.RowDefinitions[1].ActualHeight), new Function(PlotterViewModel.GetFunction()),
+                PlotterViewModel);
+
             Draw((int) WindowGrid.ActualWidth, (int) WindowGrid.RowDefinitions[1].ActualHeight);
         }
 
@@ -158,7 +158,7 @@ namespace FunctionPlotter
                 SaveFileDialog exportDialog = new SaveFileDialog();
                 exportDialog.Filter =
                     "csv files (*.csv)|*.csv|jpg files (*.jpg)|*.jpg|png files (*.png)|*.png|All files (*.*)|*.*";
-        
+
                 if (exportDialog.ShowDialog() == true)
                 {
                     if (exportDialog.FileName.EndsWith(".csv"))
@@ -187,11 +187,18 @@ namespace FunctionPlotter
 
         public void SetGlobalExceptionHandling()
         {
-            Application.Current.DispatcherUnhandledException += (s, ex) =>
+            try
             {
-                MessageBox.Show(ex.Exception.Message);
-                ex.Handled = true;
-            };
+                Application.Current.DispatcherUnhandledException += (s, ex) =>
+                {
+                    MessageBox.Show(ex.Exception.Message);
+                    ex.Handled = true;
+                };
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public void SetValidator()
