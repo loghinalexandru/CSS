@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using EnsureArg;
 
 namespace FunctionPlotter
 {
@@ -19,9 +20,17 @@ namespace FunctionPlotter
 
         public FunctionPlotter(IPainter painter, IFunction function, FunctionPlotterViewModel model)
         {
+            Ensure.Arg(painter).IsNotNull();
+            Ensure.Arg(function).IsNotNull();
+            Ensure.Arg(model).IsNotNull();
+
             _painter = painter;
             _function = function;
             _model = model;
+
+            Ensure.Arg(painter == _painter);
+            Ensure.Arg(function == _function);
+            Ensure.Arg(model == _model);
         }
 
         public void DrawIntegralFunctionPlot(int width, int height)
@@ -125,6 +134,11 @@ namespace FunctionPlotter
 
         private void DrawScale(double min, double max, int width, int height, string mode)
         {
+            Ensure.Arg(mode)
+                .IsNotNullOrEmpty()
+                .And()
+                .IsNotNullOrWhiteSpace();
+
             if (mode == "x")
             {
                 _painter.ResetTransform();
