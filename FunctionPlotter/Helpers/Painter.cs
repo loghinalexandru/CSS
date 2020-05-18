@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using EnsureArg;
+using FunctionPlotter.Domain.Interfaces;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using FunctionPlotter.Domain;
-using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter.Helpers
 {
@@ -14,6 +14,9 @@ namespace FunctionPlotter.Helpers
 
         public Painter(int width, int height)
         {
+            Ensure.Arg(width != 0);
+            Ensure.Arg(height != 0);
+
             _bitmap = new Bitmap(width, height);
             _graphics = Graphics.FromImage(_bitmap);
 
@@ -46,6 +49,8 @@ namespace FunctionPlotter.Helpers
 
         public void DrawIntegral(List<(PointF, PointF)> points)
         {
+            Ensure.Arg(points).IsNotNull();
+
             foreach (var pointPair in points)
             {
                 DrawRec(pointPair.Item1, pointPair.Item2);
@@ -59,6 +64,11 @@ namespace FunctionPlotter.Helpers
 
         public void SaveImage(string filePath)
         {
+            Ensure.Arg(filePath)
+                .IsNotNullOrEmpty()
+                .And()
+                .IsNotNullOrWhiteSpace();
+
             _bitmap.Save(filePath);
         }
 

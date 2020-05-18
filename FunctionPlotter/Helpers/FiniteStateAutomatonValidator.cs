@@ -2,6 +2,7 @@
 using FunctionPlotter.Domain.Models;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using EnsureArg;
 using FunctionPlotter.Domain.Interfaces;
 
 namespace FunctionPlotter.Helpers
@@ -14,13 +15,20 @@ namespace FunctionPlotter.Helpers
 
         public FiniteStateAutomatonValidator(List<Control> states)
         {
+            Ensure.Arg(states).IsNotNull();
+
             _states = states;
             EnableValidTransitions();
         }
 
         public void DoTransition(GraphObject nextState)
         {
+            Ensure.Arg(nextState).IsNotNull();
+
             _currentState = nextState;
+
+            Ensure.Arg(_currentState == nextState);
+
             EnableValidTransitions();
         }
 
@@ -73,6 +81,8 @@ namespace FunctionPlotter.Helpers
 
         public void EnableState(int stateIndex)
         {
+            Ensure.Arg(stateIndex).IsGreaterThanOrEqualTo(0);
+
             _states[stateIndex].IsEnabled = true;
         }
 
