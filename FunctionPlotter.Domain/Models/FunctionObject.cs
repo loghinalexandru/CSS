@@ -1,4 +1,5 @@
 ﻿using System;
+using EnsureArg;
 
 namespace FunctionPlotter.Domain.Models
 {
@@ -9,6 +10,8 @@ namespace FunctionPlotter.Domain.Models
 
         public FunctionObject(Func<double, double> function)
         {
+            Ensure.Arg(function).IsNotNull();
+
             GraphObjectType = GraphObjectType.Function;
             Value = function;
             FunctionName = function.Method.Name;

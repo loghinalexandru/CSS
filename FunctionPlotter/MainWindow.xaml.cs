@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using EnsureArg;
 
 namespace FunctionPlotter
 {
@@ -118,6 +119,12 @@ namespace FunctionPlotter
 
         public void Draw(int width, int height)
         {
+            Ensure.Arg(width)
+                .IsGreaterThan(0);
+
+            Ensure.Arg(height)
+                .IsGreaterThan(0);
+
             if (PlotterViewModel.DrawIntegral)
             {
                 _plotter.DrawIntegralFunctionPlot(width, height);
@@ -128,6 +135,8 @@ namespace FunctionPlotter
             }
 
             FunctionImage.Source = _plotter.GetFunctionImage();
+
+            Ensure.Arg(FunctionImage.Source).IsNotNull();
         }
 
         public void Draw_OnClick(object sender, RoutedEventArgs e)

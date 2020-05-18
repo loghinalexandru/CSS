@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using EnsureArg;
 
 namespace FunctionPlotter.Helpers
 {
@@ -11,6 +12,8 @@ namespace FunctionPlotter.Helpers
     {
         public static BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
+            Ensure.Arg(bitmap).IsNotNull();
+
             using var memory = new MemoryStream();
 
             bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -22,11 +25,15 @@ namespace FunctionPlotter.Helpers
             bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapimage.EndInit();
 
+            Ensure.Arg(bitmapimage).IsNotNull();
+
             return bitmapimage;
         }
 
         public static List<float> GetScaledValues(List<float> points, double scaledMin, double scaledMax)
         {
+            Ensure.Arg(points).IsNotNullOrEmpty();
+
             var result = new List<float>(points.Count);
 
             var minValue = points.Min();
@@ -44,6 +51,8 @@ namespace FunctionPlotter.Helpers
 
                 result.Add((float)newValue);
             }
+
+            Ensure.Arg(points.Count == result.Count);
 
             return result;
         }
